@@ -65,7 +65,7 @@ npm start
 
 | Field | Value |
 |------|------|
-| Password | `shecan2024` |
+| Password | `shecan2026` |
 
 ---
 

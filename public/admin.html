@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>She Can Foundation – Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --rose: #c9567b; --rose-dk: #9b3059; --rose-lt: #f5e6ec;
+      --bg: #0f0a0d; --surface: #1a1017; --surface2: #241820;
+      --border: #3a2530; --text: #f0e8ec; --muted: #8a6a78;
+      --success: #4caf82; --warn: #e0a040; --error: #e05c6a;
+      --new: #c9567b; --reviewed: #e0a040; --resolved: #4caf82;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── Login Screen ── */
+    #loginScreen {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 20px;
+    }
+    .login-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px 44px;
+      width: 100%; max-width: 400px;
+      text-align: center;
+    }
+    .login-card .logo { font-size: 2.5rem; margin-bottom: 12px; }
+    .login-card h1 { font-size: 1.5rem; font-weight: 500; margin-bottom: 6px; }
+    .login-card p { color: var(--muted); font-size: 0.88rem; margin-bottom: 32px; }
+    .login-card input {
+      width: 100%; padding: 13px 16px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 0.97rem;
+      outline: none; transition: border-color 0.2s;
+      margin-bottom: 14px; letter-spacing: 0.1em;
+    }
+    .login-card input:focus { border-color: var(--rose); }
+    .btn-login {
+      width: 100%; padding: 14px; background: var(--rose); color: white;
+      border: none; border-radius: 10px; font-size: 0.97rem;
+      font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-login:hover { background: var(--rose-dk); }
+    .login-error { color: var(--error); font-size: 0.82rem; margin-top: 10px; }
+
+    /* ── App Shell ── */
+    #app { display: none; }
+    .topbar {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 0 28px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .topbar-brand { display: flex; align-items: center; gap: 10px; }
+    .topbar-brand span { font-size: 1.3rem; }
+    .topbar-brand h2 { font-size: 1rem; font-weight: 500; }
+    .topbar-brand small { font-size: 0.72rem; color: var(--muted); margin-left: 4px; }
+    .btn-logout {
+      padding: 7px 16px; background: transparent; border: 1px solid var(--border);
+      border-radius: 8px; color: var(--muted); font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: var(--rose); color: var(--rose); }
+
+    .main { padding: 28px; max-width: 1100px; margin: 0 auto; }
+
+    /* ── Stats ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px; margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px 22px;
+    }
+    .stat-card .label { font-size: 0.73rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+    .stat-card .value { font-size: 2.1rem; font-weight: 600; line-height: 1; }
+    .stat-card.new-s .value { color: var(--new); }
+    .stat-card.reviewed-s .value { color: var(--reviewed); }
+    .stat-card.resolved-s .value { color: var(--resolved); }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .toolbar input[type=text] {
+      flex: 1; min-width: 200px; padding: 10px 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none;
+      transition: border-color 0.2s;
+    }
+    .toolbar input:focus { border-color: var(--rose); }
+    .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 8px 16px; border-radius: 8px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--rose); color: var(--rose-lt); }
+    .filter-btn.active { background: var(--rose); border-color: var(--rose); color: white; }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      padding: 13px 18px; text-align: left;
+      font-size: 0.73rem; font-weight: 500; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    td {
+      padding: 14px 18px; font-size: 0.88rem;
+      border-bottom: 1px solid rgba(58,37,48,0.5);
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(201,86,123,0.04); }
+
+    .badge {
+      display: inline-block; padding: 3px 10px; border-radius: 20px;
+      font-size: 0.73rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .badge.new      { background: rgba(201,86,123,0.15); color: var(--new); }
+    .badge.reviewed { background: rgba(224,160,64,0.15); color: var(--reviewed); }
+    .badge.resolved { background: rgba(76,175,130,0.15); color: var(--resolved); }
+
+    .td-name { font-weight: 500; }
+    .td-email { color: var(--muted); font-size: 0.82rem; }
+    .td-subject { color: var(--rose-lt); }
+    .td-msg {
+      max-width: 260px; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap; color: var(--muted);
+    }
+    .td-date { color: var(--muted); font-size: 0.78rem; white-space: nowrap; }
+
+    .row-actions { display: flex; gap: 6px; }
+    .act-btn {
+      padding: 5px 11px; border-radius: 6px; font-size: 0.75rem;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--muted); cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: all 0.18s;
+    }
+    .act-btn:hover { border-color: var(--rose); color: var(--rose-lt); }
+    .act-btn.del:hover { border-color: var(--error); color: var(--error); }
+
+    /* ── Empty / Loading ── */
+    .empty-state {
+      text-align: center; padding: 56px 20px; color: var(--muted);
+    }
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: 12px; }
+
+    /* ── Pagination ── */
+    .pagination {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 18px 0 8px;
+    }
+    .pg-btn {
+      width: 34px; height: 34px; border-radius: 8px;
+      border: 1px solid var(--border); background: transparent; color: var(--muted);
+      font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .pg-btn:hover:not(:disabled) { border-color: var(--rose); color: var(--rose); }
+    .pg-btn.active { background: var(--rose); border-color: var(--rose); color: white; }
+    .pg-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7); z-index: 200;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; padding: 32px;
+      width: 100%; max-width: 520px; max-height: 85vh; overflow-y: auto;
+    }
+    .modal h3 {
+      font-size: 1.1rem; font-weight: 500; margin-bottom: 20px;
+      color: var(--rose-lt);
+    }
+    .modal-row { margin-bottom: 14px; }
+    .modal-row label { font-size: 0.73rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; display: block; margin-bottom: 4px; }
+    .modal-row .val { font-size: 0.92rem; line-height: 1.6; word-break: break-word; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-end; }
+    .modal-btn {
+      padding: 9px 22px; border-radius: 9px; font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border);
+    }
+    .modal-btn.close { background: transparent; color: var(--muted); }
+    .modal-btn.close:hover { border-color: var(--rose); color: var(--rose); }
+    .modal-btn.resolve { background: var(--resolved); border-color: var(--resolved); color: white; }
+    .modal-btn.review  { background: var(--warn);     border-color: var(--warn);     color: #1a1a1a; }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; bottom: 28px; right: 28px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 20px;
+      font-size: 0.88rem; color: var(--text);
+      transform: translateY(20px); opacity: 0;
+      transition: all 0.3s; pointer-events: none; z-index: 999;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+
+    @media(max-width: 700px) {
+      .main { padding: 16px; }
+      td.td-msg, td.td-date { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Login ── -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="logo">🌸</div>
+    <h1>Admin Panel</h1>
+    <p>She Can Foundation – Submissions Dashboard</p>
+    <input type="password" id="pwdInput" placeholder="Enter admin password" />
+    <button class="btn-login" onclick="doLogin()">Login →</button>
+    <div class="login-error" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ── App ── -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <span>🌸</span>
+      <h2>She Can Foundation <small>Admin</small></h2>
+    </div>
+    <button class="btn-logout" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="main">
+
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card"><div class="label">Total</div><div class="value" id="sTotal">—</div></div>
+      <div class="stat-card new-s"><div class="label">New</div><div class="value" id="sNew">—</div></div>
+      <div class="stat-card reviewed-s"><div class="label">Reviewed</div><div class="value" id="sReviewed">—</div></div>
+      <div class="stat-card resolved-s"><div class="label">Resolved</div><div class="value" id="sResolved">—</div></div>
+      <div class="stat-card"><div class="label">Today</div><div class="value" id="sToday">—</div></div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <input type="text" id="searchInput" placeholder="Search by name, email, or message…" oninput="debounceLoad()" />
+      <div class="filter-btns">
+        <button class="filter-btn active" data-status="all" onclick="setFilter(this)">All</button>
+        <button class="filter-btn" data-status="new" onclick="setFilter(this)">New</button>
+        <button class="filter-btn" data-status="reviewed" onclick="setFilter(this)">Reviewed</button>
+        <button class="filter-btn" data-status="resolved" onclick="setFilter(this)">Resolved</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name / Email</th>
+            <th>Subject</th>
+            <th class="td-msg">Message</th>
+            <th>Status</th>
+            <th class="td-date">Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div id="emptyState" class="empty-state" style="display:none;">
+        <div class="icon">📭</div>
+        <div>No submissions found</div>
+      </div>
+    </div>
+
+    <div class="pagination" id="paginationWrap"></div>
+
+  </div>
+</div>
+
+<!-- ── Detail Modal ── -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modalBox">
+    <h3>Submission Detail</h3>
+    <div class="modal-row"><label>Name</label><div class="val" id="m-name"></div></div>
+    <div class="modal-row"><label>Email</label><div class="val" id="m-email"></div></div>
+    <div class="modal-row"><label>Subject</label><div class="val" id="m-subject"></div></div>
+    <div class="modal-row"><label>Message</label><div class="val" id="m-message"></div></div>
+    <div class="modal-row"><label>Submitted</label><div class="val" id="m-date"></div></div>
+    <div class="modal-row"><label>Status</label><div class="val" id="m-status"></div></div>
+    <div class="modal-actions">
+      <button class="modal-btn close" onclick="closeModal()">Close</button>
+      <button class="modal-btn review" id="m-btn-review" onclick="modalSetStatus('reviewed')">Mark Reviewed</button>
+      <button class="modal-btn resolve" id="m-btn-resolve" onclick="modalSetStatus('resolved')">Resolve</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const ADMIN_TOKEN = 'shecan2024';
+  let token = null;
+  let currentPage = 1, currentFilter = 'all', currentSearch = '', debTimer;
+  let modalId = null;
+
+  function doLogin() {
+    const pwd = document.getElementById('pwdInput').value;
+    if (pwd === ADMIN_TOKEN) {
+      token = pwd;
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      loadStats(); loadSubmissions();
+    } else {
+      document.getElementById('loginErr').textContent = 'Incorrect password.';
+    }
+  }
+  document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+  function logout() {
+    token = null;
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('pwdInput').value = '';
+    document.getElementById('loginErr').textContent = '';
+  }
+
+  async function api(path, opts = {}) {
+    const res = await fetch(path, {
+      ...opts,
+      headers: { 'x-admin-token': token, 'Content-Type': 'application/json', ...(opts.headers||{}) }
+    });
+    return res.json();
+  }
+
+  async function loadStats() {
+    const d = await api('/api/admin/stats');
+    if (!d.success) return;
+    document.getElementById('sTotal').textContent    = d.stats.total;
+    document.getElementById('sNew').textContent      = d.stats.new;
+    document.getElementById('sReviewed').textContent = d.stats.reviewed;
+    document.getElementById('sResolved').textContent = d.stats.resolved;
+    document.getElementById('sToday').textContent    = d.stats.today;
+  }
+
+  async function loadSubmissions() {
+    const params = new URLSearchParams({
+      page: currentPage, status: currentFilter, search: currentSearch
+    });
+    const d = await api(`/api/admin/submissions?${params}`);
+    if (!d.success) return;
+
+    const tbody = document.getElementById('tableBody');
+    const empty = document.getElementById('emptyState');
+
+    if (!d.submissions.length) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+    } else {
+      empty.style.display = 'none';
+      tbody.innerHTML = d.submissions.map(s => `
+        <tr>
+          <td style="color:var(--muted); font-size:0.78rem;">#${s.id}</td>
+          <td>
+            <div class="td-name">${esc(s.name)}</div>
+            <div class="td-email">${esc(s.email)}</div>
+          </td>
+          <td class="td-subject">${esc(s.subject)}</td>
+          <td class="td-msg">${esc(s.message)}</td>
+          <td><span class="badge ${s.status}">${s.status}</span></td>
+          <td class="td-date">${fmtDate(s.created_at)}</td>
+          <td>
+            <div class="row-actions">
+              <button class="act-btn" onclick="openModal(${s.id})">View</button>
+              <button class="act-btn del" onclick="deleteRow(${s.id}, this)">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    renderPagination(d.page, d.pages);
+  }
+
+  function renderPagination(page, pages) {
+    const wrap = document.getElementById('paginationWrap');
+    if (pages <= 1) { wrap.innerHTML = ''; return; }
+    let html = `<button class="pg-btn" onclick="goPage(${page-1})" ${page<=1?'disabled':''}>‹</button>`;
+    for (let i = 1; i <= pages; i++)
+      html += `<button class="pg-btn ${i===page?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    html += `<button class="pg-btn" onclick="goPage(${page+1})" ${page>=pages?'disabled':''}>›</button>`;
+    wrap.innerHTML = html;
+  }
+
+  function goPage(n) { currentPage = n; loadSubmissions(); }
+
+  function setFilter(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.status;
+    currentPage = 1;
+    loadSubmissions();
+  }
+
+  function debounceLoad() {
+    clearTimeout(debTimer);
+    debTimer = setTimeout(() => {
+      currentSearch = document.getElementById('searchInput').value.trim();
+      currentPage = 1;
+      loadSubmissions();
+    }, 300);
+  }
+
+  async function deleteRow(id, btn) {
+    if (!confirm('Delete this submission?')) return;
+    await api(`/api/admin/submissions/${id}`, { method: 'DELETE' });
+    toast('Submission deleted.');
+    loadStats(); loadSubmissions();
+  }
+
+  // ── Modal ──
+  let _submissions = {};
+
+  async function openModal(id) {
+    const params = new URLSearchParams({ status: 'all', search: '' });
+    // Re-use cached data or fetch
+    const d = await api(`/api/admin/submissions?status=all&search=&page=1`);
+    const all = d.submissions || [];
+    // Try all pages hack: just fetch full list for modal
+    const found = all.find(s => s.id === id);
+    if (!found) return;
+    modalId = id;
+    document.getElementById('m-name').textContent    = found.name;
+    document.getElementById('m-email').textContent   = found.email;
+    document.getElementById('m-subject').textContent = found.subject;
+    document.getElementById('m-message').textContent = found.message;
+    document.getElementById('m-date').textContent    = new Date(found.created_at).toLocaleString();
+    document.getElementById('m-status').innerHTML    = `<span class="badge ${found.status}">${found.status}</span>`;
+    document.getElementById('modalOverlay').classList.add('show');
+  }
+
+  function closeModal(e) {
+    if (!e || e.target === document.getElementById('modalOverlay'))
+      document.getElementById('modalOverlay').classList.remove('show');
+  }
+
+  async function modalSetStatus(status) {
+    if (!modalId) return;
+    await api(`/api/admin/submissions/${modalId}/status`, {
+      method: 'PATCH', body: JSON.stringify({ status })
+    });
+    document.getElementById('modalOverlay').classList.remove('show');
+    toast(`Status updated to "${status}".`);
+    loadStats(); loadSubmissions();
+  }
+
+  // ── Helpers ──
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function fmtDate(s) {
+    const d = new Date(s);
+    return `${d.getDate()} ${d.toLocaleString('default',{month:'short'})} ${d.getFullYear()}`;
+  }
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>She Can Foundation – Contact Us</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --rose:     #c9567b;
+      --rose-lt:  #f0c4d4;
+      --rose-dk:  #9b3059;
+      --cream:    #fdf6f0;
+      --sand:     #e8ddd5;
+      --text:     #2a1a20;
+      --muted:    #7a5c68;
+      --success:  #2d7a5f;
+      --error:    #b5303a;
+      --white:    #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Background Decoration ─────────────────── */
+    .bg-decoration {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      overflow: hidden;
+    }
+    .bg-decoration::before {
+      content: '';
+      position: absolute;
+      top: -120px; right: -120px;
+      width: 480px; height: 480px;
+      background: radial-gradient(circle, rgba(201,86,123,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .bg-decoration::after {
+      content: '';
+      position: absolute;
+      bottom: -100px; left: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(201,86,123,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    /* ── Header ────────────────────────────────── */
+    header {
+      position: relative; z-index: 10;
+      text-align: center;
+      padding: 52px 24px 32px;
+    }
+
+    .logo-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .logo-icon {
+      width: 44px; height: 44px;
+      background: var(--rose);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+
+    .logo-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--rose-dk);
+      letter-spacing: 0.02em;
+    }
+
+    header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 300;
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    header h1 em {
+      font-style: italic;
+      color: var(--rose);
+    }
+
+    header p {
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 300;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── Divider ───────────────────────────────── */
+    .divider {
+      display: flex; align-items: center; gap: 14px;
+      max-width: 260px; margin: 0 auto 36px;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1;
+      height: 1px; background: var(--rose-lt);
+    }
+    .divider span { color: var(--rose); font-size: 1.1rem; }
+
+    /* ── Card ──────────────────────────────────── */
+    .card-wrap {
+      position: relative; z-index: 10;
+      max-width: 580px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 24px;
+      box-shadow:
+        0 2px 4px rgba(201,86,123,0.06),
+        0 12px 40px rgba(42,26,32,0.10),
+        0 0 0 1px rgba(201,86,123,0.08);
+      padding: 44px 44px 40px;
+      animation: slideUp 0.6s ease both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Form ──────────────────────────────────── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .field {
+      display: flex; flex-direction: column; gap: 7px;
+      animation: fadeIn 0.5s ease both;
+    }
+    .field:nth-child(1) { animation-delay: 0.05s; }
+    .field:nth-child(2) { animation-delay: 0.10s; }
+    .field:nth-child(3) { animation-delay: 0.15s; grid-column: 1 / -1; }
+    .field:nth-child(4) { animation-delay: 0.20s; grid-column: 1 / -1; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    label {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    label .req { color: var(--rose); margin-left: 2px; }
+
+    input, select, textarea {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.97rem;
+      color: var(--text);
+      background: var(--cream);
+      border: 1.5px solid var(--sand);
+      border-radius: 10px;
+      padding: 13px 16px;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      outline: none;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--rose);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(201,86,123,0.10);
+    }
+
+    input.error, select.error, textarea.error {
+      border-color: var(--error);
+      box-shadow: 0 0 0 3px rgba(181,48,58,0.09);
+    }
+
+    textarea { resize: vertical; min-height: 130px; }
+
+    .field-error {
+      font-size: 0.78rem;
+      color: var(--error);
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    .char-count {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: right;
+    }
+    .char-count.warn { color: var(--error); }
+
+    /* ── Submit Button ─────────────────────────── */
+    .submit-wrap {
+      margin-top: 28px;
+      animation: fadeIn 0.5s 0.3s ease both;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px 32px;
+      background: var(--rose);
+      color: var(--white);
+      border: none;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      background: var(--rose-dk);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(201,86,123,0.35);
+    }
+
+    .btn-submit:active:not(:disabled) { transform: translateY(0); }
+    .btn-submit:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    .btn-submit .spinner {
+      display: none;
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto;
+    }
+    .btn-submit.loading .label { display: none; }
+    .btn-submit.loading .spinner { display: block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Alert ─────────────────────────────────── */
+    .alert {
+      display: none;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      margin-top: 18px;
+      animation: fadeIn 0.3s ease;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .alert.show { display: flex; }
+    .alert.success {
+      background: #e9f7f2;
+      border: 1.5px solid #a3d8c5;
+      color: var(--success);
+    }
+    .alert.fail {
+      background: #fdecea;
+      border: 1.5px solid #f5b5b8;
+      color: var(--error);
+    }
+    .alert-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+    .alert-text { line-height: 1.5; }
+
+    /* ── Success Screen ────────────────────────── */
+    .success-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 20px 0;
+      gap: 16px;
+      animation: fadeIn 0.5s ease;
+    }
+    .success-screen.show { display: flex; }
+
+    .success-icon {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, var(--rose) 0%, var(--rose-dk) 100%);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 8px 24px rgba(201,86,123,0.35);
+      animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .success-screen h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    .success-screen p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-width: 360px;
+    }
+
+    .btn-reset {
+      margin-top: 8px;
+      padding: 11px 28px;
+      background: transparent;
+      color: var(--rose);
+      border: 1.5px solid var(--rose);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-reset:hover {
+      background: var(--rose);
+      color: white;
+    }
+
+    /* ── Footer ────────────────────────────────── */
+    footer {
+      position: relative; z-index: 10;
+      text-align: center;
+      padding: 0 24px 32px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    footer a {
+      color: var(--rose);
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ────────────────────────────── */
+    @media (max-width: 560px) {
+      .card { padding: 28px 22px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field:nth-child(3),
+      .field:nth-child(4) { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-decoration"></div>
+
+<!-- ── Header ── -->
+<header>
+  <div class="logo-mark">
+    <div class="logo-icon">🌸</div>
+    <span class="logo-text">She Can Foundation</span>
+  </div>
+  <h1>Get in <em>Touch</em></h1>
+  <p>We'd love to hear from you — whether it's a question, partnership inquiry, or simply a hello.</p>
+</header>
+
+<div class="divider"><span>✦</span></div>
+
+<!-- ── Card ── -->
+<div class="card-wrap">
+  <div class="card">
+
+    <!-- Success Screen -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">✓</div>
+      <h2>Form Submitted Successfully</h2>
+      <p>Thank you for reaching out! Our team will review your message and get back to you within 2–3 business days.</p>
+      <button class="btn-reset" onclick="resetForm()">Send Another Message</button>
+    </div>
+
+    <!-- Contact Form -->
+    <form id="contactForm" novalidate>
+      <div class="form-grid">
+
+        <div class="field" id="field-name">
+          <label for="name">Full Name <span class="req">*</span></label>
+          <input type="text" id="name" name="name" placeholder="Priya Sharma" autocomplete="name" />
+          <span class="field-error" id="err-name"></span>
+        </div>
+
+        <div class="field" id="field-email">
+          <label for="email">Email Address <span class="req">*</span></label>
+          <input type="email" id="email" name="email" placeholder="priya@example.com" autocomplete="email" />
+          <span class="field-error" id="err-email"></span>
+        </div>
+
+        <div class="field" id="field-subject">
+          <label for="subject">Subject <span class="req">*</span></label>
+          <select id="subject" name="subject">
+            <option value="">— Select a topic —</option>
+            <option value="General Inquiry">General Inquiry</option>
+            <option value="Volunteer / Join Us">Volunteer / Join Us</option>
+            <option value="Donation / Support">Donation / Support</option>
+            <option value="Partnership Opportunity">Partnership Opportunity</option>
+            <option value="Program Information">Program Information</option>
+            <option value="Other">Other</option>
+          </select>
+          <span class="field-error" id="err-subject"></span>
+        </div>
+
+        <div class="field" id="field-message">
+          <label for="message">Your Message <span class="req">*</span></label>
+          <textarea id="message" name="message" placeholder="Tell us how we can help or how you'd like to get involved…" maxlength="2000"></textarea>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="field-error" id="err-message"></span>
+            <span class="char-count" id="charCount">0 / 2000</span>
+          </div>
+        </div>
+
+      </div><!-- /form-grid -->
+
+      <div class="submit-wrap">
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span class="label">Send Message &nbsp;→</span>
+          <span class="spinner"></span>
+        </button>
+
+        <div class="alert" id="alertBox">
+          <span class="alert-icon" id="alertIcon"></span>
+          <span class="alert-text" id="alertText"></span>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>She Can Foundation &nbsp;·&nbsp; <a href="/admin.html">Admin Panel</a> &nbsp;·&nbsp; Empowering women, one step at a time 🌸</p>
+</footer>
+
+<!-- ── Script ── -->
+<script>
+  const form        = document.getElementById('contactForm');
+  const submitBtn   = document.getElementById('submitBtn');
+  const alertBox    = document.getElementById('alertBox');
+  const alertText   = document.getElementById('alertText');
+  const alertIcon   = document.getElementById('alertIcon');
+  const successScr  = document.getElementById('successScreen');
+  const charCount   = document.getElementById('charCount');
+
+  // Live character counter
+  document.getElementById('message').addEventListener('input', function () {
+    const len = this.value.length;
+    charCount.textContent = `${len} / 2000`;
+    charCount.classList.toggle('warn', len > 1800);
+  });
+
+  // Field-level validation
+  function clearError(fieldId) {
+    document.getElementById(`err-${fieldId}`).textContent = '';
+    document.getElementById(fieldId)?.classList.remove('error');
+  }
+
+  function showError(fieldId, msg) {
+    document.getElementById(`err-${fieldId}`).textContent = '⚠ ' + msg;
+    document.getElementById(fieldId)?.classList.add('error');
+  }
+
+  function validateForm() {
+    let valid = true;
+    const name    = document.getElementById('name').value.trim();
+    const email   = document.getElementById('email').value.trim();
+    const subject = document.getElementById('subject').value;
+    const message = document.getElementById('message').value.trim();
+
+    ['name','email','subject','message'].forEach(clearError);
+
+    if (name.length < 2)
+      { showError('name', 'Name must be at least 2 characters.'); valid = false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      { showError('email', 'Enter a valid email address.'); valid = false; }
+    if (!subject)
+      { showError('subject', 'Please select a subject.'); valid = false; }
+    if (message.length < 10)
+      { showError('message', 'Message must be at least 10 characters.'); valid = false; }
+
+    return valid;
+  }
+
+  function showAlert(type, msg) {
+    alertBox.className = `alert show ${type}`;
+    alertIcon.textContent = type === 'success' ? '✅' : '❌';
+    alertText.textContent = msg;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    submitBtn.disabled = true;
+    submitBtn.classList.add('loading');
+    alertBox.className = 'alert';
+
+    const data = {
+      name:    document.getElementById('name').value.trim(),
+      email:   document.getElementById('email').value.trim(),
+      subject: document.getElementById('subject').value,
+      message: document.getElementById('message').value.trim()
+    };
+
+    try {
+      const res  = await fetch('/api/submit', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(data)
+      });
+      const json = await res.json();
+
+      if (json.success) {
+        form.style.display = 'none';
+        successScr.classList.add('show');
+      } else {
+        const errs = json.errors ? json.errors.join(' ') : json.error;
+        showAlert('fail', errs);
+      }
+    } catch {
+      showAlert('fail', 'Network error. Please check your connection and try again.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('loading');
+    }
+  });
+
+  function resetForm() {
+    form.reset();
+    charCount.textContent = '0 / 2000';
+    ['name','email','subject','message'].forEach(id => {
+      clearError(id);
+      document.getElementById(id)?.classList.remove('error');
+    });
+    alertBox.className = 'alert';
+    successScr.classList.remove('show');
+    form.style.display = '';
+  }
+</script>
+</body>
+</html>
